@@ -173,32 +173,17 @@ class Counter():
             self.plot_detected_area()
 
 
-    # def plot_detected_area(self):
-
-    #     print(str(len(self.props['areas'])) +" samples were detected")
-    #     ax = plt.axes()
-    #     plt.title("detected samples")
-    #     ax.imshow(self.image_raw)
-    #     plot_bboxs(bbox_list=self.props["bboxs"], ax=ax)
-    #     plot_texts(text_list=self.props["names"], cordinate_list=self.props["bboxs"], ax=ax, shift=[0, -60])
-    #     plt.show()
-    
     def plot_detected_area(self):
+
         print(str(len(self.props['areas'])) +" samples were detected")
         ax = plt.axes()
         plt.title("detected samples")
         ax.imshow(self.image_raw)
-        
-        # Plot small boxes around the detected colonies
-        for bbox in self.props["bboxs"]:
-            minr, minc, maxr, maxc = bbox
-            rect = plt.Rectangle((minc, minr), maxc - minc, maxr - minr, fill=False, edgecolor='red', linewidth=0.5)
-            ax.add_patch(rect)
-        
+        plot_bboxs(bbox_list=self.props["bboxs"], ax=ax)
         plot_texts(text_list=self.props["names"], cordinate_list=self.props["bboxs"], ax=ax, shift=[0, -60])
         plt.show()
-
-
+    
+    
     def detect_area(self, n_samples, white_threshold=0.7, use_binelized_image_for_edge_detection=True, verbose=True):
         """
         The method detects sample area in input image.
