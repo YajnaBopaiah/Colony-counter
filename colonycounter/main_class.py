@@ -471,7 +471,55 @@ class Counter():
         if verbose:
             self.plot_detected_colonies()
 
-    def plot_detected_colonies(self, plot="final", col_num=3, vmax=None, save=None, overlay_circle=True):
+    # def plot_detected_colonies(self, plot="final", col_num=3, vmax=None, save=None, overlay_circle=True):
+    #     """
+    #     Function to plot detected colonies detection.
+
+    #     Args:
+    #         plot_raw (bool) : if True, the white-black image will be shown. If it is not True, inversed image will be used for the plotting.
+
+    #         col_num (int): the number of column in subplot.
+
+    #     """
+    #     if plot == "raw":
+    #         image_list = self.sample_image_bw
+    #     elif plot == "final":
+    #         image_list = self.sample_image_for_quantification
+    #     elif plot == "raw_inversed":
+    #         image_list = self.sample_image_inversed_bw
+    #     else:
+    #         raise ValueError("plot argment is wrong.")
+
+    #     if vmax is None:
+    #         vmax = _get_vmax(image_list)
+    #         print("vmax: ", vmax)
+    #     idx = 1
+
+    #     for i, image in enumerate(image_list):
+
+    #         k = (i%col_num + 1)
+    #         ax = plt.subplot(1, col_num, k)
+    #         blobs = self.detected_blobs[i]
+    #         if plot == "raw":
+    #             plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
+    #             if overlay_circle:
+    #                 plot_circles(circle_list=blobs, ax=ax, args={"color": "black"})
+
+    #         else:
+    #             plt.imshow(image, vmin=0, vmax=vmax)
+    #             if overlay_circle:
+    #                 plot_circles(circle_list=blobs, ax=ax)
+
+    #         name = self.props["names"][i]
+    #         plt.title(f"{name}: {len(blobs)} colonies")
+    #         if (k == col_num) | (i == len(image_list)):
+    #             if save is not None:
+    #                 plt.savefig(f"{save}_{idx}.png", transparent=True)
+    #             plt.show()
+    #             idx += 1
+
+
+    def plot_detected_colonies(self, plot="final", col_num=3, vmax=None, save=None, overlay_circle=True, draw_boxes=True):
         """
         Function to plot detected colonies detection.
 
@@ -497,18 +545,28 @@ class Counter():
 
         for i, image in enumerate(image_list):
 
-            k = (i%col_num + 1)
+            k = (i % col_num + 1)
             ax = plt.subplot(1, col_num, k)
             blobs = self.detected_blobs[i]
             if plot == "raw":
                 plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
                 if overlay_circle:
                     plot_circles(circle_list=blobs, ax=ax, args={"color": "black"})
+                if draw_boxes:
+                    for blob in blobs:
+                        y, x, r = blob
+                        rect = plt.Rectangle((x - r, y - r), 2 * r, 2 * r, edgecolor='red', facecolor='none')
+                        ax.add_patch(rect)
 
             else:
                 plt.imshow(image, vmin=0, vmax=vmax)
                 if overlay_circle:
                     plot_circles(circle_list=blobs, ax=ax)
+                if draw_boxes:
+                    for blob in blobs:
+                        y, x, r = blob
+                        rect = plt.Rectangle((x - r, y - r), 2 * r, 2 * r, edgecolor='red', facecolor='none')
+                        ax.add_patch(rect)
 
             name = self.props["names"][i]
             plt.title(f"{name}: {len(blobs)} colonies")
@@ -517,6 +575,7 @@ class Counter():
                     plt.savefig(f"{save}_{idx}.png", transparent=True)
                 plt.show()
                 idx += 1
+
 
 def _get_vmax(image_list):
     vmax = []
