@@ -7,6 +7,7 @@ from skimage.feature import blob_dog, blob_log, blob_doh, peak_local_max
 from math import sqrt
 import numpy as np
 import pandas as pd
+from matplotlib.patches import Rectangle
 
 from scipy import ndimage
 
