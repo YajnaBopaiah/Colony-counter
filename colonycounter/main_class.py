@@ -410,6 +410,54 @@ class Counter():
             easy_sub_plot(self.sample_image_for_quantification, 4, self.props["names"],  {"vmin":0, "vmax": vmax})
             plt.show()
 
+    def plot_detected_colonies(self, plot="final", col_num=3, vmax=None, save=None, overlay_circle=True, highlight_color="red"):
+        """
+        Function to plot detected colonies detection.
+
+        Args:
+            plot_raw (bool) : if True, the white-black image will be shown. If it is not True, inversed image will be used for the plotting.
+
+            col_num (int): the number of column in subplot.
+
+            highlight_color (str): the color for highlighting detected colonies.
+
+        """
+        if plot == "raw":
+            image_list = self.sample_image_bw
+        elif plot == "final":
+            image_list = self.sample_image_for_quantification
+        elif plot == "raw_inversed":
+            image_list = self.sample_image_inversed_bw
+        else:
+            raise ValueError("plot argment is wrong.")
+
+        if vmax is None:
+            vmax = _get_vmax(image_list)
+            print("vmax: ", vmax)
+        idx = 1
+
+        for i, image in enumerate(image_list):
+
+            k = (i % col_num + 1)
+            ax = plt.subplot(1, col_num, k)
+            blobs = self.detected_blobs[i]
+
+            # Plot the original image
+            plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
+
+            # Overlay transparent circles for detected colonies
+            if overlay_circle:
+                plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.4})
+
+            name = self.props["names"][i]
+            plt.title(f"{name}: {len(blobs)} colonies")
+            if (k == col_num) | (i == len(image_list)):
+                if save is not None:
+                    plt.savefig(f"{save}_{idx}.png", transparent=True)
+                plt.show()
+                idx += 1
+
+
     def detect_colonies(self, min_size=5, max_size=15, threshold=0.02, num_sigma=10, overlap=0.5, verbose=True):
         """
         Function for colony detection.
@@ -430,8 +478,6 @@ class Counter():
             verbose (bool): if True, the resutls wil be shown.
 
         """
-
-
 
         self.detected_blobs = []
         for image in self.sample_image_for_quantification:
@@ -504,52 +550,6 @@ class Counter():
     #             plt.show()
     #             idx += 1
     
-    def plot_detected_colonies(self, plot="final", col_num=3, vmax=None, save=None, overlay_circle=True, highlight_color="red"):
-        """
-        Function to plot detected colonies detection.
-
-        Args:
-            plot_raw (bool) : if True, the white-black image will be shown. If it is not True, inversed image will be used for the plotting.
-
-            col_num (int): the number of column in subplot.
-
-            highlight_color (str): the color for highlighting detected colonies.
-
-        """
-        if plot == "raw":
-            image_list = self.sample_image_bw
-        elif plot == "final":
-            image_list = self.sample_image_for_quantification
-        elif plot == "raw_inversed":
-            image_list = self.sample_image_inversed_bw
-        else:
-            raise ValueError("plot argment is wrong.")
-
-        if vmax is None:
-            vmax = _get_vmax(image_list)
-            print("vmax: ", vmax)
-        idx = 1
-
-        for i, image in enumerate(image_list):
-
-            k = (i % col_num + 1)
-            ax = plt.subplot(1, col_num, k)
-            blobs = self.detected_blobs[i]
-
-            # Plot the original image
-            plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
-
-            # Overlay transparent circles for detected colonies
-            if overlay_circle:
-                plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.4})
-
-            name = self.props["names"][i]
-            plt.title(f"{name}: {len(blobs)} colonies")
-            if (k == col_num) | (i == len(image_list)):
-                if save is not None:
-                    plt.savefig(f"{save}_{idx}.png", transparent=True)
-                plt.show()
-                idx += 1
 
 def _get_vmax(image_list):
     vmax = []
