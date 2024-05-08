@@ -447,7 +447,7 @@ class Counter():
 
             # Overlay transparent circles for detected colonies
             if overlay_circle:
-                plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.4})
+                plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.7})
 
             name = self.props["names"][i]
             plt.title(f"{name}: {len(blobs)} colonies")
