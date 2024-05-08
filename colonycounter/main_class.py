@@ -496,7 +496,7 @@ class Counter():
 
             if overlay_shape == "box":
                 # Get bounding boxes from detected blobs
-                bboxes = np.array([blob[0] - blob[2], blob[1] - blob[2], 2 * blob[2], 2 * blob[2]])
+                bboxes = np.array([blobs[0] - blobs[2], blobs[1] - blobs[2], 2 * blobs[2], 2 * blobs[2]])
 
                 # Draw bounding boxes
                 for bbox in bboxes:
