@@ -442,14 +442,17 @@ class Counter():
             k = (i % col_num + 1)
             ax = plt.subplot(1, col_num, k)
             blobs = self.detected_blobs[i]
-
-            # Plot the original image
-            plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
-
-            # Overlay transparent circles for detected colonies
-            if overlay_circle:
-                plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.4})
-
+            
+            if plot == "raw":
+                plt.imshow(image, cmap="gray", vmin=0, vmax=vmax)
+                if overlay_circle:
+                    plot_circles(circle_list=blobs, ax=ax, args={"color": highlight_color, "alpha": 0.4})
+            
+            else:
+                plt.imshow(image, vmin=0, vmax=vmax)
+                if overlay_circle:
+                    plot_circles(circle_list=blobs, ax=ax,  args={"color": highlight_color, "alpha": 0.4})
+            
             name = self.props["names"][i]
             plt.title(f"{name}: {len(blobs)} colonies")
             if (k == col_num) | (i == len(image_list)):
